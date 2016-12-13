@@ -1,0 +1,50 @@
+; This file can be space-delimited or comma-delimited, or a mixture.
+; Comment characters are #, ;, and !.  Blank lines are ignored.
+; Keywords are not case-sensitive.  Filenames are used verbatim, and can
+; include spaces if enclosed in quotes.
+
+# The keyword PROJECT gives the SCICHEM project (basename)
+
+Project no2-2005-mc
+
+# The keyword CALCulate specifies whether to include background concentrations
+
+calculate plume  ! plume (default) or total = ambient + plume
+
+# The repeatable keyword RECeptors specifies the Receptor Sets to use.
+# Files can be the Class I receptor files downloaded from
+#   http://www2.nature.nps.gov/air/maps/Receptors/index.cfm
+# or contain user-specified receptors, one UTMx,UTMy, or LON,LAT pair per line.
+# 2nd word is 1 if the receptor set is Class I, 2 for Class II.
+# 3rd word is a user-specified NAME.  The NAME must match the first 4 characters
+# in the FLAG (2010) look-up tables for it to be treated as a Class I area, and
+# visilbity obscuration calculated.
+# 4th word is either LATLON (syn: LL) or anything else for Cartesian
+# (including UTM). Must match coordinate system of the SCICHEM run.
+
+rec 2  SAM    utm    no2-2005-mc.sam
+
+# OUTPUT section: 
+# 1st word is CONcentration, DEPosition, or VISibility obscuration
+# 2nd word is the chemical species to process
+# 3rd word is a selection criteria: output ALL values, the MAX value or >VAL
+# 4th word is the rank, e.g. the 8th highest high (98th percentile)
+# 5th and 6th words specify the period over which to average or take the maximum
+# 7th word is either MAX or AVG, the statistic to take over each FREQUENCY
+# 8th and 9th words specify the frequency, how often to take the MAX or AVG
+# 10th word is the output file type, CSV, XZY (data), or AERMOD-style POSTFILE
+# 11th word is the filename, can contain spaces if enclosed in quotes
+# 
+# All RECeptor sets are written to each output, so XYZ and PLOT/POST files
+# should be run with only one REC line above, or you'll get a mashup.
+# 
+# Visibility obscuration results can only be calculated for Class I
+# receptor sets.  They will be silently skipped for other REC sets.
+# The FLAG(2010) method probably only makes sense when using CALC PLUME above.
+# 
+#    SPEC  SEL RANK PERIOD STAT   FREQ  TYPE  FILENAME
+con  no2   >-1  8th   1 hr max_in 24 hr XYZ   no2.DV.max    ! x y value
+con  no2   max  8th   1 hr max_in 24 hr CSV   max_concentrations.csv
+con  no2   max  1st   1 yr avg_in  1 yr CSV   max_concentrations.csv
+con  no2   all  8th   1 hr m      24 hr PLOT  no2.dv.plot
+
